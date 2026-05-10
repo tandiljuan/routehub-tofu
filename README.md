@@ -39,3 +39,65 @@ Next, upload the **public** SSH key to Hetzner so it can be injected into the se
 ```bash
 hcloud ssh-key create --name main --public-key-from-file ~/.ssh/for_routehub_root.pub
 ```
+
+## Initialization
+
+Now is time to initialize the directory containing the OpenTofu configuration files. This process will, among other things, install the [Hetzner Cloud provider](https://github.com/hetznercloud/terraform-provider-hcloud) plugin.
+
+The command will prompt you for values for any variables that do not have a default. To simplify this, you can define the [values in a file](https://opentofu.org/docs/language/values/variables/#variable-definitions-tfvars-files).
+
+```bash
+tofu init
+```
+
+## Plan
+
+After initialization, create a plan. OpenTofu will display the changes it intends to make to your infrastructure.
+
+```bash
+tofu plan
+```
+
+## Apply
+
+If the plan looks correct and you are satisfied with the proposed changes, run the following command to deploy the resources.
+
+```bash
+tofu apply
+```
+
+## Verification
+
+Assuming OpenTofu applied the changes successfully, you should now have a running server. You can verify this by running the command below, which attempts to establish an SSH connection and returns a success or failure message.
+
+```bash
+ssh \
+    -o BatchMode=yes \
+    -o ConnectTimeout=5 \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    -o IdentitiesOnly=yes \
+    -i ~/.ssh/for_routehub_root \
+    -q "root@$(tofu output --raw server_ipv4)" exit \
+&& echo ">> SSH OK :-)" || echo ">> SSH ERROR :-("
+```
+
+**Expected output:**
+
+```
+>> SSH OK :-)
+```
+
+You can also use the Hetzner Cloud CLI to list the newly created server.
+
+```bash
+hcloud server list
+```
+
+## Destroy
+
+Once you have finished testing or learning OpenTofu, you can delete all resources to avoid unnecessary costs with the following command:
+
+```bash
+tofu destroy
+```
