@@ -52,6 +52,18 @@ variable "htz_srv_img" {
   default = "ubuntu-24.04"
 }
 
+variable "htz_srv_lst" {
+  description = "Hetzner server list"
+  type = map(object({
+    name = string,
+    type = string,
+  }))
+  default = {
+    01 = { name = "mng", type = "manager" },
+    02 = { name = "wrk", type = "worker" },
+  }
+}
+
 # --------------------------------------
 # Data
 # --------------------------------------
