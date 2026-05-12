@@ -78,5 +78,9 @@ data "hcloud_ssh_key" "main" {
 # --------------------------------------
 
 locals {
+  common_labels = {
+    project = var.htz_pjt
+    managed_by = "opentofu"
+  }
   srv_lst_key = sort(keys(var.htz_srv_lst))
 }
