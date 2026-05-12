@@ -72,3 +72,11 @@ variable "htz_srv_lst" {
 data "hcloud_ssh_key" "main" {
   name = var.htz_ssh
 }
+
+# --------------------------------------
+# Locals
+# --------------------------------------
+
+locals {
+  srv_lst_key = sort(keys(var.htz_srv_lst))
+}
