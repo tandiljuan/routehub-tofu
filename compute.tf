@@ -1,6 +1,7 @@
-resource "hcloud_server" "main" {
-  name = "${var.htz_pfx}-main"
+resource "hcloud_server" "cluster" {
+  for_each = var.htz_srv_lst
 
+  name = format("%s-%s", var.htz_pfx, each.value.name)
   server_type = var.htz_srv_typ
   image = var.htz_srv_img
   location = var.htz_loc
@@ -15,5 +16,5 @@ resource "hcloud_server" "main" {
     ipv6_enabled = false
   }
 
-  labels = merge(local.common_labels, { role = "main" })
+  labels = merge(local.common_labels, { role = each.value.type })
 }
