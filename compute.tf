@@ -11,6 +11,11 @@ resource "hcloud_server" "cluster" {
     hcloud_firewall.ssh.id,
   ]
 
+  network {
+    network_id = hcloud_network.main.id
+    ip = each.value.private_ip
+  }
+
   public_net {
     ipv4_enabled = true
     ipv6_enabled = false
