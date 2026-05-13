@@ -26,6 +26,24 @@ variable "htz_loc" {
   default = "hel1"
 }
 
+variable "htz_net_zne" {
+  description = "Network Zone"
+  type = string
+  default = "eu-central"
+}
+
+variable "htz_net_cidr" {
+  description = "Network IP range"
+  type = string
+  default = "10.0.0.0/16"
+}
+
+variable "htz_net_prv_cidr" {
+  description = "Private subnet IP range"
+  type = string
+  default = "10.0.1.0/24"
+}
+
 variable "htz_ssh" {
   description = "SSH key name"
   type = string
