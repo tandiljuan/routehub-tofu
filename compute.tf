@@ -22,4 +22,5 @@ resource "hcloud_server" "cluster" {
   }
 
   labels = merge(local.common_labels, { role = each.value.type })
+  depends_on = [hcloud_network_subnet.private]
 }
