@@ -75,10 +75,11 @@ variable "htz_srv_lst" {
   type = map(object({
     name = string,
     type = string,
+    private_ip = string,
   }))
   default = {
-    01 = { name = "mng", type = "manager" },
-    02 = { name = "wrk", type = "worker" },
+    01 = { name = "mng", type = "manager", private_ip = "10.0.1.1" },
+    02 = { name = "wrk", type = "worker", private_ip = "10.0.1.2" },
   }
 }
 
