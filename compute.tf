@@ -17,7 +17,7 @@ resource "hcloud_server" "cluster" {
   }
 
   public_net {
-    ipv4_enabled = true
+    ipv4_enabled = each.key == local.srv_lst_key[0] ? true : false
     ipv6_enabled = false
   }
 
