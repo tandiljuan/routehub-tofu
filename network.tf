@@ -1,3 +1,24 @@
+# --------------------------------------
+# Network
+# --------------------------------------
+
+resource "hcloud_network" "main" {
+  name = "${var.htz_pfx}-net"
+  ip_range = var.htz_net_cidr
+  labels  = merge(local.common_labels, { role = "main" })
+}
+
+resource "hcloud_network_subnet" "private" {
+  network_id = hcloud_network.main.id
+  type = "cloud"
+  network_zone = var.htz_net_zne
+  ip_range = var.htz_net_prv_cidr
+}
+
+# --------------------------------------
+# Firewall
+# --------------------------------------
+
 resource "hcloud_firewall" "icmp" {
   name = "${var.htz_pfx}-icmp"
   rule {
