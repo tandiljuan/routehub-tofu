@@ -21,6 +21,12 @@ resource "hcloud_server" "cluster" {
     ipv6_enabled = false
   }
 
+  user_data = (
+    each.key == local.srv_lst_key[0]
+    ? file("${path.module}/script/gateway.yaml")
+    : file("${path.module}/script/private.yaml")
+  )
+
   labels = merge(local.common_labels, { role = each.value.type })
   depends_on = [hcloud_network_subnet.private]
 }
