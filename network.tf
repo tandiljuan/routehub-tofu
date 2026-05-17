@@ -15,6 +15,13 @@ resource "hcloud_network_subnet" "private" {
   ip_range = var.htz_net_prv_cidr
 }
 
+resource "hcloud_network_route" "egress" {
+  network_id  = hcloud_network.main.id
+  destination = "0.0.0.0/0"
+  gateway     = var.htz_srv_lst[local.srv_lst_key[0]].private_ip
+  depends_on  = [hcloud_server.cluster]
+}
+
 # --------------------------------------
 # Firewall
 # --------------------------------------
