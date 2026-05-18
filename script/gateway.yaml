@@ -21,6 +21,24 @@ write_files:
       set -euo pipefail
 
       # ============================================================================
+      # DEFINE PRIVATE SUBNET
+      # ============================================================================
+
+      PRIVATE_SUBNET="10.0.1.0/24"
+
+      # ============================================================================
+      # DETECT PRIVATE INTERFACE
+      # ============================================================================
+
+      PRIVATE_IF=$(ip route get "$(echo "$PRIVATE_SUBNET" | cut -d'/' -f1)" \
+        | awk '{for(i=1;i<=NF;i++) if($i=="dev") {print $(i+1); exit}}')
+
+      if [[ -z "${PRIVATE_IF:-}" ]]; then
+        echo "ERROR: Failed to detect private interface" >&2
+        exit 1
+      fi
+
+      # ============================================================================
       # DETECT PUBLIC INTERFACE
       # ============================================================================
 
@@ -28,17 +46,6 @@ write_files:
 
       if [[ -z "${PUBLIC_IF:-}" ]]; then
         echo "ERROR: Failed to detect public interface" >&2
-        exit 1
-      fi
-
-      # ============================================================================
-      # DETECT PRIVATE INTERFACE
-      # ============================================================================
-
-      PRIVATE_IF=$(ip -o -4 addr show | awk '$4 ~ /^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.)/ {print $2; exit}')
-
-      if [[ -z "${PRIVATE_IF:-}" ]]; then
-        echo "ERROR: Failed to detect private interface" >&2
         exit 1
       fi
 
@@ -57,6 +64,7 @@ write_files:
 
       echo "PUBLIC_IF=$PUBLIC_IF"
       echo "PRIVATE_IF=$PRIVATE_IF"
+      echo "PRIVATE_SUBNET=$PRIVATE_SUBNET"
 
       # ============================================================================
       # SYSCTL
@@ -180,6 +188,7 @@ write_files:
 
       # Allow return packets for established Internet connections.
       -A GW-FWD \
+        -d $PRIVATE_SUBNET \
         -i $PUBLIC_IF \
         -o $PRIVATE_IF \
         -m conntrack --ctstate ESTABLISHED,RELATED \
@@ -187,6 +196,7 @@ write_files:
 
       # Allow "Private -> Internet"
       -A GW-FWD \
+        -s $PRIVATE_SUBNET \
         -i $PRIVATE_IF \
         -o $PUBLIC_IF \
         -m conntrack --ctstate NEW,ESTABLISHED,RELATED \
@@ -217,6 +227,7 @@ write_files:
       # This allows machines on the private network to access
       # the Internet even though they do not have public IP addresses.
       -A GW-NAT \
+        -s $PRIVATE_SUBNET \
         -o $PUBLIC_IF \
         -j MASQUERADE
 
