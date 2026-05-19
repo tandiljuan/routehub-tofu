@@ -78,8 +78,8 @@ variable "htz_srv_lst" {
     private_ip = string,
   }))
   default = {
-    01 = { name = "mng", type = "manager", private_ip = "10.0.1.1" },
-    02 = { name = "wrk", type = "worker", private_ip = "10.0.1.2" },
+    01 = { name = "nat", type = "gateway", private_ip = "10.0.1.1" },
+    02 = { name = "pvt", type = "private", private_ip = "10.0.1.2" },
   }
 }
 
