@@ -102,4 +102,7 @@ locals {
     managed_by = "opentofu"
   }
   srv_lst_key = sort(keys(var.htz_srv_lst))
+  # Gateway IP
+  # @see https://docs.hetzner.com/networking/networks/faq/#how-do-i-setup-my-own-router
+  net_prv_gtw_ip = cidrhost(var.htz_net_cidr, 1)
 }
