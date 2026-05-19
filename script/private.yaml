@@ -11,11 +11,11 @@ write_files:
       set -euo pipefail
 
       # https://docs.hetzner.com/networking/networks/faq/#how-do-i-setup-my-own-router
-      GATEWAY_IP="10.0.0.1"
+      GATEWAY_IP="${ gateway_ip }"
 
       IFACE=$(ip -o -4 addr show | awk '$4 ~ /^10\./ {print $2; exit}')
 
-      if [[ -z "${IFACE:-}" ]]; then
+      if [[ -z "$${IFACE:-}" ]]; then
         echo "Failed to detect private interface" >&2
         exit 1
       fi

@@ -24,7 +24,9 @@ resource "hcloud_server" "cluster" {
   user_data = (
     each.key == local.srv_lst_key[0]
     ? file("${path.module}/script/gateway.yaml")
-    : file("${path.module}/script/private.yaml")
+    : templatefile("${path.module}/script/private.yaml", {
+      gateway_ip = local.net_prv_gtw_ip
+    })
   )
 
   labels = merge(local.common_labels, { role = each.value.type })
