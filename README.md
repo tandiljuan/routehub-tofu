@@ -68,7 +68,7 @@ tofu apply
 
 ## Verification
 
-Assuming OpenTofu applied the changes successfully, you should now have all the servers defined in the list up and running. You can verify this by running the command below, which attempts to establish an SSH connection to the manager and returns a success or failure message.
+Assuming OpenTofu applied the changes successfully, you should now have all the servers listed up and running. You can verify this by running the command below, which attempts to establish an SSH connection to the NAT gateway and returns a success or failure message.
 
 ```bash
 ssh \
@@ -78,7 +78,7 @@ ssh \
     -o UserKnownHostsFile=/dev/null \
     -o IdentitiesOnly=yes \
     -i ~/.ssh/for_routehub_root \
-    -q root@$(tofu output --json server_ipv4 | jq -r '."rh-mng"') exit \
+    -q root@$(tofu output --json server_ipv4 | jq -r '."rh-nat"') exit \
 && echo ">> SSH OK :-)" || echo ">> SSH ERROR :-("
 ```
 
