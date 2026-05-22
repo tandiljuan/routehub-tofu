@@ -83,6 +83,20 @@ variable "htz_srv_lst" {
   }
 }
 
+variable "htz_vol_lst" {
+  description = "Hetzner volume list"
+  type = map(object({
+    server = number, # index in local.srv_lst_key
+    name = string,
+    size = number,
+    format = string,
+    automount = bool,
+  }))
+  default = {
+    01 = { server = 1, name = "backup", size = 10, format = "ext4", automount = true },
+  }
+}
+
 # --------------------------------------
 # Data
 # --------------------------------------
