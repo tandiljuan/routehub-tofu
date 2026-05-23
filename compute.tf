@@ -26,9 +26,7 @@ resource "hcloud_server" "cluster" {
     ? templatefile("${path.module}/script/gateway.yaml", {
       private_subnet = var.htz_net_prv_cidr
     })
-    : templatefile("${path.module}/script/private.yaml", {
-      gateway_ip = local.net_prv_gtw_ip
-    })
+    : ""
   )
 
   labels = merge(local.common_labels, { role = each.value.type })
