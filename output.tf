@@ -6,3 +6,12 @@ output "server_ipv4" {
       coalesce(server.ipv4_address, try(one(server.network).ip, ""), "[EMPTY]")
   }
 }
+
+output "volume_path" {
+  description = "List of volumes' device paths."
+  value = {
+    for key, volume in hcloud_volume.main :
+      volume.name =>
+      coalesce(volume.linux_device, "[EMPTY]")
+  }
+}
