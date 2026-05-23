@@ -3,7 +3,7 @@ resource "hcloud_server" "cluster" {
 
   name = format("%s-%s", var.htz_pfx, each.value.name)
   server_type = each.value.type
-  image = var.htz_srv_img
+  image = each.value.image
   location = var.htz_loc
   ssh_keys = [data.hcloud_ssh_key.main.id]
   firewall_ids = [
