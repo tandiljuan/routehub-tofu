@@ -21,6 +21,6 @@ resource "hcloud_server" "cluster" {
     ipv6_enabled = each.key == local.srv_lst_key[0] ? false : true
   }
 
-  labels = merge(local.common_labels, { role = each.value.type })
+  labels = merge(local.common_labels, { role = each.value.role })
   depends_on = [hcloud_network_subnet.private]
 }
