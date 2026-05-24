@@ -19,19 +19,6 @@ resource "hcloud_network_subnet" "private" {
 # Firewall
 # --------------------------------------
 
-resource "hcloud_firewall" "icmp" {
-  name = "${var.htz_pfx}-icmp"
-  rule {
-    direction = "in"
-    protocol = "icmp"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
-  labels = merge(local.common_labels, { role = "icmp" })
-}
-
 resource "hcloud_firewall" "ssh" {
   name = "${var.htz_pfx}-ssh"
   rule {
