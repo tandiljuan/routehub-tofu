@@ -57,12 +57,6 @@ variable "htz_ssh_src" {
   ]
 }
 
-variable "htz_srv_typ" {
-  description = "Hetzner server type"
-  type = string
-  default = "cx23"
-}
-
 variable "htz_srv_img" {
   description = "Hetzner server image"
   type = string
@@ -73,12 +67,13 @@ variable "htz_srv_lst" {
   description = "Hetzner server list"
   type = map(object({
     name = string,
+    type = string,
     role = string,
     private_ip = string,
   }))
   default = {
-    01 = { name = "nat", role = "gateway", private_ip = "10.0.1.1" },
-    02 = { name = "pvt", role = "private", private_ip = "10.0.1.2" },
+    01 = { name = "nat", type = "cx23", role = "gateway", private_ip = "10.0.1.1" },
+    02 = { name = "pvt", type = "cx23", role = "private", private_ip = "10.0.1.2" },
   }
 }
 
