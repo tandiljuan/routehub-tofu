@@ -67,8 +67,8 @@ variable "htz_srv_lst" {
     private_ip = string,
   }))
   default = {
-    01 = { name = "nat", type = "cx23", image = "ubuntu-24.04", role = "gateway", private_ip = "10.0.1.1" },
-    02 = { name = "pvt", type = "cx23", image = "ubuntu-24.04", role = "private", private_ip = "10.0.1.2" },
+    01 = { name = "mng", type = "cx23", image = "ubuntu-24.04", role = "manager", private_ip = "10.0.1.1" },
+    02 = { name = "wrk", type = "cx23", image = "ubuntu-24.04", role = "worker", private_ip = "10.0.1.2" },
   }
 }
 
