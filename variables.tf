@@ -54,20 +54,31 @@ variable "htz_ssh_src" {
   type = list(string)
   default = [
     "0.0.0.0/0",
-    "::/0"
   ]
 }
 
-variable "htz_srv_typ" {
-  description = "Hetzner server type"
-  type = string
-  default = "cx23"
-}
-
-variable "htz_srv_img" {
-  description = "Hetzner server image"
-  type = string
-  default = "ubuntu-24.04"
+variable "htz_fwl_lst" {
+  description = "List of firewall rules"
+  type = map(object({
+    name = string,
+    rule = list(object({
+      direction = string,
+      protocol = string,
+      port = optional(string),
+      source = optional(list(string)),
+      destination = optional(list(string)),
+    })),
+    to_label = optional(any), # list(string) or map(string) or CSV
+  }))
+  default = {
+    01 = {
+      name = "icmp",
+      rule = [
+        { direction = "in", protocol = "icmp", source = ["0.0.0.0/0", "::/0"] },
+      ],
+      to_label = ["role=manager", "role=worker"],
+    }
+  }
 }
 
 variable "htz_srv_lst" {
@@ -75,11 +86,14 @@ variable "htz_srv_lst" {
   type = map(object({
     name = string,
     type = string,
+    image = string,
+    role = string,
     private_ip = string,
+    labels = optional(map(string)),
   }))
   default = {
-    01 = { name = "nat", type = "gateway", private_ip = "10.0.1.1" },
-    02 = { name = "pvt", type = "private", private_ip = "10.0.1.2" },
+    01 = { name = "mng", type = "cx23", image = "ubuntu-24.04", role = "manager", private_ip = "10.0.1.1" },
+    02 = { name = "wrk", type = "cx23", image = "ubuntu-24.04", role = "worker", private_ip = "10.0.1.2" },
   }
 }
 
