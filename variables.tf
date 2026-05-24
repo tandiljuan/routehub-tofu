@@ -89,6 +89,7 @@ variable "htz_srv_lst" {
     image = string,
     role = string,
     private_ip = string,
+    labels = optional(map(string)),
   }))
   default = {
     01 = { name = "mng", type = "cx23", image = "ubuntu-24.04", role = "manager", private_ip = "10.0.1.1" },
