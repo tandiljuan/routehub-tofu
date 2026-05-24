@@ -57,6 +57,30 @@ variable "htz_ssh_src" {
   ]
 }
 
+variable "htz_fwl_lst" {
+  description = "List of firewall rules"
+  type = map(object({
+    name = string,
+    rule = list(object({
+      direction = string,
+      protocol = string,
+      port = optional(string),
+      source = optional(list(string)),
+      destination = optional(list(string)),
+    })),
+    to_label = optional(any), # list(string) or map(string) or CSV
+  }))
+  default = {
+    01 = {
+      name = "icmp",
+      rule = [
+        { direction = "in", protocol = "icmp", source = ["0.0.0.0/0", "::/0"] },
+      ],
+      to_label = ["role=manager", "role=worker"],
+    }
+  }
+}
+
 variable "htz_srv_lst" {
   description = "Hetzner server list"
   type = map(object({
