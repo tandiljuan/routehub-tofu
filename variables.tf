@@ -111,6 +111,16 @@ variable "htz_vol_lst" {
   }
 }
 
+variable "htz_lb" {
+  description = "Hetzner load balancer"
+  type = object({
+    type = string,
+  })
+  default = {
+    type = "lb11",
+  }
+}
+
 # --------------------------------------
 # Data
 # --------------------------------------
