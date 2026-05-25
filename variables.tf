@@ -92,8 +92,8 @@ variable "htz_srv_lst" {
     labels = optional(map(string)),
   }))
   default = {
-    01 = { name = "mng", type = "cx23", image = "ubuntu-24.04", role = "manager", private_ip = "10.0.1.1" },
-    02 = { name = "wrk", type = "cx23", image = "ubuntu-24.04", role = "worker", private_ip = "10.0.1.2" },
+    01 = { name = "mng", type = "cx23", image = "ubuntu-24.04", role = "manager", private_ip = "10.0.1.11" },
+    02 = { name = "wrk", type = "cx23", image = "ubuntu-24.04", role = "worker", private_ip = "10.0.1.12" },
   }
 }
 
