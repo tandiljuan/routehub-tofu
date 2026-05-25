@@ -115,9 +115,11 @@ variable "htz_lb" {
   description = "Hetzner load balancer"
   type = object({
     type = string,
+    private_ip = string,
   })
   default = {
     type = "lb11",
+    private_ip = "10.0.1.10",
   }
 }
 
