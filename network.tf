@@ -64,3 +64,19 @@ resource "hcloud_firewall" "dynamic" {
 
   labels = merge(local.common_labels, { role = "dynamic" })
 }
+
+# --------------------------------------
+# Load Balancer
+# --------------------------------------
+
+resource "hcloud_load_balancer" "main" {
+  name = "${var.htz_pfx}-lb"
+  load_balancer_type = var.htz_lb.type
+  location = var.htz_loc
+
+  labels = merge(local.common_labels, { role = "main" })
+
+  lifecycle {
+    enabled = var.htz_lb != null
+  }
+}
