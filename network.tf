@@ -5,7 +5,7 @@
 resource "hcloud_network" "main" {
   name = "${var.htz_pfx}-net"
   ip_range = var.htz_net_cidr
-  labels  = merge(local.common_labels, { role = "main" })
+  labels = merge(local.common_labels, { role = "main" })
 }
 
 resource "hcloud_network_subnet" "private" {
