@@ -80,3 +80,13 @@ resource "hcloud_load_balancer" "main" {
     enabled = var.htz_lb != null
   }
 }
+
+resource "hcloud_load_balancer_network" "private" {
+  load_balancer_id = hcloud_load_balancer.main.id
+  subnet_id = hcloud_network_subnet.private.id
+  ip = var.htz_lb.private_ip
+
+  lifecycle {
+    enabled = hcloud_load_balancer.main != null
+  }
+}
