@@ -90,3 +90,50 @@ resource "hcloud_load_balancer_network" "private" {
     enabled = hcloud_load_balancer.main != null
   }
 }
+
+resource "hcloud_load_balancer_service" "dynamic" {
+  for_each = merge({}, try(var.htz_lb.services, null))
+
+  load_balancer_id = hcloud_load_balancer.main.id
+  protocol = each.value.protocol
+  listen_port = each.value.from
+  destination_port = each.value.to
+
+  dynamic "http" {
+    for_each = each.value.http != null ? [each.value.http] : []
+    iterator = http
+
+    content {
+      sticky_sessions = http.value.sticky
+      cookie_name = http.value.cookie
+      cookie_lifetime = http.value.lifetime
+      certificates = http.value.certs
+      redirect_http = http.value.redirect
+    }
+  }
+
+  dynamic "health_check" {
+    for_each = each.value.check != null ? [each.value.check] : []
+    iterator = check
+
+    content {
+      protocol = check.value.protocol
+      port = check.value.port
+      interval = check.value.interval
+      timeout = check.value.timeout
+      retries = check.value.retries
+
+      dynamic "http" {
+        for_each = check.value.http != null ? [check.value.http] : []
+        iterator = http
+
+        content {
+          domain = http.value.domain
+          path = http.value.path
+          response = http.value.response
+          status_codes = http.value.codes
+        }
+      }
+    }
+  }
+}
