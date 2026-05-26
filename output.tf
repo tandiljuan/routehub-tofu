@@ -15,3 +15,11 @@ output "volume_path" {
       coalesce(volume.linux_device, "[EMPTY]")
   }
 }
+
+output "load_balancer" {
+  description = "Load Balancer public IPs"
+  value = {
+    ipv4 = try(hcloud_load_balancer.main.ipv4, "[EMPTY]"),
+    ipv6 = try(hcloud_load_balancer.main.ipv6, "[EMPTY]"),
+  }
+}
