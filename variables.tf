@@ -116,10 +116,38 @@ variable "htz_lb" {
   type = object({
     type = string,
     private_ip = string,
+    services = optional(map(object({
+      protocol = string,
+      from = optional(number),
+      to = optional(number),
+      http = optional(object({
+        sticky = optional(bool),
+        cookie = optional(string),
+        lifetime = optional(number),
+        certs = optional(list(number)),
+        redirect = optional(bool),
+      })),
+      check = optional(object({
+        protocol = string,
+        port = number,
+        interval = number,
+        timeout = number,
+        retries = number,
+        http = optional(object({
+          domain = optional(string),
+          path = optional(string),
+          response = optional(string),
+          codes = optional(list(string)),
+        })),
+      })),
+    }))),
   })
   default = {
     type = "lb11",
     private_ip = "10.0.1.10",
+    services = {
+      01 = { protocol = "http", from = 80, to = 80 },
+    },
   }
 }
 
