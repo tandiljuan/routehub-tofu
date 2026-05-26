@@ -137,3 +137,12 @@ resource "hcloud_load_balancer_service" "dynamic" {
     }
   }
 }
+
+resource "hcloud_load_balancer_target" "cluster" {
+  for_each = var.htz_lb != null ? hcloud_server.cluster : {}
+
+  type = "server"
+  load_balancer_id = hcloud_load_balancer.main.id
+  server_id = each.value.id
+  use_private_ip = true
+}
