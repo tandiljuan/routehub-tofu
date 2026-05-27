@@ -98,14 +98,14 @@ variable "htz_srv_lst" {
   type = map(object({
     name = string,
     type = optional(string),
-    image = string,
+    image = optional(string),
     role = string,
     private_ip = string,
     labels = optional(map(string)),
   }))
   default = {
-    01 = { name = "mng", image = "ubuntu-24.04", role = "manager", private_ip = "10.0.1.11" },
-    02 = { name = "wrk", image = "ubuntu-24.04", role = "worker", private_ip = "10.0.1.12" },
+    01 = { name = "mng", role = "manager", private_ip = "10.0.1.11" },
+    02 = { name = "wrk", role = "worker", private_ip = "10.0.1.12" },
   }
 }
 
