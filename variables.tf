@@ -91,15 +91,15 @@ variable "htz_srv_lst" {
   description = "Hetzner server list"
   type = map(object({
     name = string,
-    type = string,
+    type = optional(string),
     image = string,
     role = string,
     private_ip = string,
     labels = optional(map(string)),
   }))
   default = {
-    01 = { name = "mng", type = "cx23", image = "ubuntu-24.04", role = "manager", private_ip = "10.0.1.11" },
-    02 = { name = "wrk", type = "cx23", image = "ubuntu-24.04", role = "worker", private_ip = "10.0.1.12" },
+    01 = { name = "mng", image = "ubuntu-24.04", role = "manager", private_ip = "10.0.1.11" },
+    02 = { name = "wrk", image = "ubuntu-24.04", role = "worker", private_ip = "10.0.1.12" },
   }
 }
 
