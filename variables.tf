@@ -32,6 +32,12 @@ variable "htz_srv_typ" {
   default = "cx23"
 }
 
+variable "htz_srv_img" {
+  description = "Default server image"
+  type = string
+  default = "ubuntu-24.04"
+}
+
 variable "htz_net_zne" {
   description = "Network Zone"
   type = string
