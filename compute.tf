@@ -16,8 +16,8 @@ resource "hcloud_server" "cluster" {
   }
 
   public_net {
-    ipv4_enabled = each.key == local.srv_lst_key[0] ? true : false
-    ipv6_enabled = each.key == local.srv_lst_key[0] ? false : true
+    ipv4_enabled = coalesce(each.value.public_ip4, false)
+    ipv6_enabled = coalesce(each.value.public_ip6, false)
   }
 
   labels = merge(local.common_labels, { role = each.value.role }, coalesce(each.value.labels, {}))

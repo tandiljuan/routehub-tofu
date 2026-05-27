@@ -101,11 +101,13 @@ variable "htz_srv_lst" {
     image = optional(string),
     role = string,
     private_ip = string,
+    public_ip4 = optional(bool),
+    public_ip6 = optional(bool),
     labels = optional(map(string)),
   }))
   default = {
-    01 = { name = "mng", role = "manager", private_ip = "10.0.1.11" },
-    02 = { name = "wrk", role = "worker", private_ip = "10.0.1.12" },
+    01 = { name = "mng", role = "manager", private_ip = "10.0.1.11", public_ip4 = true },
+    02 = { name = "wrk", role = "worker", private_ip = "10.0.1.12", public_ip6 = true },
   }
 }
 
