@@ -11,7 +11,7 @@ resource "hcloud_server" "cluster" {
   ]
 
   network {
-    network_id = hcloud_network.main.id
+    subnet_id = hcloud_network_subnet.private.id
     ip = each.value.private_ip
   }
 
@@ -21,5 +21,4 @@ resource "hcloud_server" "cluster" {
   }
 
   labels = merge(local.common_labels, { role = each.value.role }, coalesce(each.value.labels, {}))
-  depends_on = [hcloud_network_subnet.private]
 }
