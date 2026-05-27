@@ -26,6 +26,12 @@ variable "htz_loc" {
   default = "hel1"
 }
 
+variable "htz_srv_typ" {
+  description = "Default server type"
+  type = string
+  default = "cx23"
+}
+
 variable "htz_net_zne" {
   description = "Network Zone"
   type = string

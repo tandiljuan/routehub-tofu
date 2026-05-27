@@ -2,7 +2,7 @@ resource "hcloud_server" "cluster" {
   for_each = var.htz_srv_lst
 
   name = format("%s-%s", var.htz_pfx, each.value.name)
-  server_type = each.value.type
+  server_type = coalesce(each.value.type, var.htz_srv_typ)
   image = each.value.image
   location = var.htz_loc
   ssh_keys = [data.hcloud_ssh_key.main.id]
