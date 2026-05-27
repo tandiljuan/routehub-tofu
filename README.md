@@ -94,6 +94,37 @@ You can also use the Hetzner Cloud CLI to list the newly created server.
 hcloud server list
 ```
 
+### Load Balancer
+
+If you're using the default load balancer settings, a service must be listening on port 80. Run an [Nginx](https://hub.docker.com/_/nginx) container on the manager server to provide that service by executing the command below.
+
+```bash
+ssh \
+    -o BatchMode=yes \
+    -o ConnectTimeout=5 \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    -o IdentitiesOnly=yes \
+    -i ~/.ssh/for_routehub_root \
+    -q root@$(tofu output --json server_ipv4 | jq -r '."rh-mng"') bash -c \
+'export DEBIAN_FRONTEND=noninteractive \
+&& apt-get -y update \
+&& apt-get -y install docker.io \
+&& docker run --rm --detach --publish 80:80 nginx:alpine'
+```
+
+It may take a few seconds for the load balancer to detect the new service. Run the command below and wait until the load balancer's status (health) shows **healthy** or **mixed**.
+
+```bash
+watch hcloud load-balancer list
+```
+
+Once the load balancer is ready, curl its public IP with the command below. You should see the standard "Welcome to nginx!" page.
+
+```bash
+curl $(tofu output --json load_balancer | jq -r '.ipv4')
+```
+
 ## Destroy
 
 Once you have finished testing or learning OpenTofu, you can delete all resources to avoid unnecessary costs with the following command:
