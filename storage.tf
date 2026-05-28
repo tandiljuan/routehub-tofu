@@ -12,5 +12,4 @@ resource "hcloud_volume" "main" {
   automount = each.value.automount
 
   labels = merge(local.common_labels, { role = each.value.name })
-  depends_on = [hcloud_server.cluster]
 }
