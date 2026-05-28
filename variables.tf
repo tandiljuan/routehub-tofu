@@ -26,6 +26,18 @@ variable "htz_loc" {
   default = "hel1"
 }
 
+variable "htz_srv_typ" {
+  description = "Default server type"
+  type = string
+  default = "cx23"
+}
+
+variable "htz_srv_img" {
+  description = "Default server image"
+  type = string
+  default = "ubuntu-24.04"
+}
+
 variable "htz_net_zne" {
   description = "Network Zone"
   type = string
@@ -85,15 +97,17 @@ variable "htz_srv_lst" {
   description = "Hetzner server list"
   type = map(object({
     name = string,
-    type = string,
-    image = string,
+    type = optional(string),
+    image = optional(string),
     role = string,
     private_ip = string,
+    public_ip4 = optional(bool),
+    public_ip6 = optional(bool),
     labels = optional(map(string)),
   }))
   default = {
-    01 = { name = "mng", type = "cx23", image = "ubuntu-24.04", role = "manager", private_ip = "10.0.1.1" },
-    02 = { name = "wrk", type = "cx23", image = "ubuntu-24.04", role = "worker", private_ip = "10.0.1.2" },
+    01 = { name = "mng", role = "manager", private_ip = "10.0.1.11", public_ip4 = true },
+    02 = { name = "wrk", role = "worker", private_ip = "10.0.1.12", public_ip6 = true },
   }
 }
 
@@ -108,6 +122,46 @@ variable "htz_vol_lst" {
   }))
   default = {
     01 = { server = 1, name = "backup", size = 10, format = "ext4", automount = true },
+  }
+}
+
+variable "htz_lb" {
+  description = "Hetzner load balancer"
+  type = object({
+    type = string,
+    private_ip = string,
+    services = optional(map(object({
+      protocol = string,
+      from = optional(number),
+      to = optional(number),
+      http = optional(object({
+        sticky = optional(bool),
+        cookie = optional(string),
+        lifetime = optional(number),
+        certs = optional(list(number)),
+        redirect = optional(bool),
+      })),
+      check = optional(object({
+        protocol = string,
+        port = number,
+        interval = number,
+        timeout = number,
+        retries = number,
+        http = optional(object({
+          domain = optional(string),
+          path = optional(string),
+          response = optional(string),
+          codes = optional(list(string)),
+        })),
+      })),
+    }))),
+  })
+  default = {
+    type = "lb11",
+    private_ip = "10.0.1.10",
+    services = {
+      01 = { protocol = "http", from = 80, to = 80 },
+    },
   }
 }
 

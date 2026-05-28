@@ -2,8 +2,8 @@ resource "hcloud_server" "cluster" {
   for_each = var.htz_srv_lst
 
   name = format("%s-%s", var.htz_pfx, each.value.name)
-  server_type = each.value.type
-  image = each.value.image
+  server_type = coalesce(each.value.type, var.htz_srv_typ)
+  image = coalesce(each.value.image, var.htz_srv_img)
   location = var.htz_loc
   ssh_keys = [data.hcloud_ssh_key.main.id]
   firewall_ids = [
@@ -11,15 +11,14 @@ resource "hcloud_server" "cluster" {
   ]
 
   network {
-    network_id = hcloud_network.main.id
+    subnet_id = hcloud_network_subnet.private.id
     ip = each.value.private_ip
   }
 
   public_net {
-    ipv4_enabled = each.key == local.srv_lst_key[0] ? true : false
-    ipv6_enabled = each.key == local.srv_lst_key[0] ? false : true
+    ipv4_enabled = coalesce(each.value.public_ip4, false)
+    ipv6_enabled = coalesce(each.value.public_ip6, false)
   }
 
   labels = merge(local.common_labels, { role = each.value.role }, coalesce(each.value.labels, {}))
-  depends_on = [hcloud_network_subnet.private]
 }
