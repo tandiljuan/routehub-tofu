@@ -60,10 +60,19 @@ tofu plan
 
 ## Apply
 
-If the plan looks correct and you are satisfied with the proposed changes, run the following command to deploy the resources.
+If the plan is correct and you are satisfied with the proposed changes, run the following command to deploy the resources:
 
 ```bash
 tofu apply
+```
+
+During the initial deployment, a race condition may occur between server creation and network configuration, potentially leaving the internal network improperly initialized. To ensure stability, is recommended to reboot the servers after the first apply:
+
+```bash
+for i in $(tofu output --json server_ipv4 | jq -r 'keys[]'); do
+    echo ">> Rebooting Hetzner server '${i}'"
+    hcloud server reboot "${i}"
+done
 ```
 
 ## Verification
