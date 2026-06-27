@@ -88,6 +88,10 @@ variable "htz_fwl_lst" {
       rule = [
         { direction = "in", protocol = "icmp", source = ["0.0.0.0/0", "::/0"] },
       ],
+      # 'to_label' accepts:
+      # - List of strings: ["key=value", ...]
+      # - Map of strings: { key = "value", ... }
+      # - CSV string: "key1=val1,key2=val2,..."
       to_label = ["role=manager", "role=worker"],
     }
   }
