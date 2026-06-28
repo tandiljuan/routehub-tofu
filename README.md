@@ -60,10 +60,19 @@ tofu plan
 
 ## Apply
 
-If the plan looks correct and you are satisfied with the proposed changes, run the following command to deploy the resources.
+If the plan is correct and you are satisfied with the proposed changes, run the following command to deploy the resources:
 
 ```bash
 tofu apply
+```
+
+During the initial deployment, a race condition may occur between server creation and network configuration, potentially leaving the internal network improperly initialized. To ensure stability, is recommended to reboot the servers after the first apply:
+
+```bash
+for i in $(tofu output --json server_ipv4 | jq -r 'keys[]'); do
+    echo ">> Rebooting Hetzner server '${i}'"
+    hcloud server reboot "${i}"
+done
 ```
 
 ## Verification
@@ -92,6 +101,38 @@ You can also use the Hetzner Cloud CLI to list the newly created server.
 
 ```bash
 hcloud server list
+```
+
+#### SSH Setup
+
+Below is a script to add the new servers to your SSH configuration file. Note that the options `StrictHostKeyChecking no` and `UserKnownHostsFile /dev/null` are intended only for ephemeral or disposable environments, remove them if you are configuring a production environment.
+
+```bash
+PROXY_JUMP=''
+tofu output --json server_ipv4 |
+jq -r 'to_entries[] | "\(.key) \(.value)"' |
+nl -v0 -w1 -s' ' |
+while IFS=' ' read -r index key value; do
+    if (( $index == 0 )); then
+        PROXY_JUMP="${key}"
+        OPTIONS='ConnectTimeout 5'
+    else
+        OPTIONS=$(printf "ProxyJump ${PROXY_JUMP}\n  ServerAliveInterval 60\n  ServerAliveCountMax 3")
+    fi
+    cat <<EOF >> ~/.ssh/config
+
+Host ${key}
+  Hostname ${value}
+  User root
+  IdentityFile ~/.ssh/for_routehub_root
+  ForwardAgent yes
+  IdentitiesOnly yes
+  StrictHostKeyChecking no # Not for production
+  UserKnownHostsFile /dev/null # Not for production
+  LogLevel QUIET
+  ${OPTIONS}
+EOF
+done
 ```
 
 ### Load Balancer
